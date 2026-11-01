@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>APPAVI KEY GENERATOR</title>
+<style>
+:root{--a:#ffcc00;--b:#bf00ff;--bg:#05050d;--ok:#00ff88;--bad:#ff4466;--mut:#ffffff88}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:#fff;font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh}
+.wrap{max-width:860px;margin:0 auto;padding:14px}
+h1{margin:6px 0 2px;font-size:20px;letter-spacing:3px;color:var(--a);text-shadow:0 0 12px var(--a)}
+.sub{color:var(--mut);font-size:12px;margin-bottom:14px}
+.card{border:1px solid #ffffff22;border-radius:16px;padding:14px;margin:12px 0;background:rgba(255,255,255,.03);box-shadow:0 0 30px #bf00ff14}
+.card h2{margin:0 0 10px;font-size:13px;letter-spacing:2px;color:var(--b);text-transform:uppercase}
+input,select,button,textarea{font:inherit;color:#fff;background:#0d0d1c;border:1px solid #ffffff33;border-radius:10px;padding:10px 12px;outline:none}
+input:focus,select:focus{border-color:var(--a)}
+button{cursor:pointer;font-weight:700;letter-spacing:1px;background:linear-gradient(135deg,#bf00ff55,#ffcc0022);border-color:var(--b)}
+button:active{transform:scale(.98)}
+button.sm{padding:6px 10px;font-size:11px}
+button.red{border-color:var(--bad);background:#ff446622}
+button.green{border-color:var(--ok);background:#00ff8822}
+button.ghost{background:none;border-color:#ffffff33;color:var(--mut)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.row>*{flex:1 1 120px}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;text-align:center}
+.stat{border:1px solid #ffffff1a;border-radius:12px;padding:8px 2px}
+.stat b{display:block;font-size:20px}.stat span{font-size:9px;letter-spacing:1px;color:var(--mut);text-transform:uppercase}
+.key{border:1px solid #ffffff1a;border-radius:14px;padding:10px 12px;margin:8px 0;background:#0a0a16}
+.key .top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.code{font-family:ui-monospace,Consolas,monospace;font-size:15px;letter-spacing:1px;color:var(--a);word-break:break-all}
+.chip{display:inline-block;padding:2px 10px;border-radius:12px;font-size:10px;font-weight:800;letter-spacing:1px;border:1px solid}
+.unused{color:#9ecbff;border-color:#9ecbff}.active{color:var(--ok);border-color:var(--ok)}
+.expired{color:#ff9d00;border-color:#ff9d00}.revoked{color:var(--bad);border-color:var(--bad)}
+.meta{color:var(--mut);font-size:11px;margin:6px 0;line-height:1.6}
+.acts{display:flex;gap:6px;flex-wrap:wrap}
+#msg{min-height:18px;font-size:12px;margin:6px 0}
+.made{font-family:ui-monospace,Consolas,monospace;font-size:14px;color:var(--a);white-space:pre-wrap;background:#0a0a16;border:1px dashed #ffcc0066;border-radius:12px;padding:10px;margin-top:10px}
+.hide{display:none}
+@media(max-width:520px){.stats{grid-template-columns:repeat(3,1fr)}}
+</style></head><body><div class="wrap">
+
+<div id="login" class="hide">
+  <h1>APPAVI KEY GENERATOR</h1><div class="sub">Admin login</div>
+  <div class="card">
+    <div class="row"><input id="pw" type="password" placeholder="Admin password" autocomplete="current-password"><button id="loginBtn">LOGIN</button></div>
+    <div id="lmsg" class="meta"></div>
+  </div>
+</div>
+
+<div id="app" class="hide">
+  <div class="row" style="justify-content:space-between"><div><h1>APPAVI KEY GENERATOR</h1><div class="sub">1 key = 1 device · expire any key any time</div></div><button class="sm ghost" id="logout" style="flex:0 0 auto">LOGOUT</button></div>
+
+  <div class="card"><h2>Stats</h2><div class="stats" id="stats"></div></div>
+
+  <div class="card"><h2>Generate keys</h2>
+    <div class="row">
+      <select id="gType"><option value="7">7 days</option><option value="15">15 days</option><option value="30">30 days</option><option value="life">Lifetime</option></select>
+      <input id="gCount" type="number" min="1" max="200" value="1" placeholder="How many">
+      <input id="gNote" placeholder="Note (buyer name, optional)" maxlength="80">
+    </div>
+    <div class="row" style="margin-top:8px"><button id="gBtn">GENERATE</button></div>
+    <div id="made" class="made hide"></div>
+    <div class="row" id="madeBtns" style="margin-top:8px"><button class="sm hide" id="copyAll">COPY ALL</button></div>
+    <div class="meta">The timer of a 7 / 15 / 30 day key starts when the user activates it for the first time.</div>
+  </div>
+
+  <div class="card"><h2>All keys</h2>
+    <div class="row"><input id="q" placeholder="Search key / note / device"><select id="f"><option value="">All</option><option value="unused">Unused</option><option value="active">Active</option><option value="expired">Expired</option><option value="revoked">Expired by admin</option></select></div>
+    <div id="list"></div>
+  </div>
+
+  <div class="card"><h2>Backup</h2>
+    <div class="row"><button class="sm ghost" id="bk">DOWNLOAD BACKUP</button><label class="sm" style="flex:1 1 120px"><button class="sm ghost" style="width:100%" onclick="document.getElementById('imp').click()">RESTORE BACKUP</button><input id="imp" type="file" accept=".json" class="hide"></label></div>
+    <div class="meta">Download a backup now and then. If you use Render FREE without Upstash Redis, the key list is wiped when the server restarts.</div>
+  </div>
+  <div id="msg"></div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+let TOKEN=localStorage.getItem('appaviAdmin')||'',KEYS=[],NOW=Date.now();
+const show=(a)=>{$('login').classList.toggle('hide',a);$('app').classList.toggle('hide',!a)};
+const say=(t,bad)=>{const m=$('msg');m.textContent=t||'';m.style.color=bad?'var(--bad)':'var(--ok)';if(t)setTimeout(()=>{if(m.textContent===t)m.textContent=''},4000)};
+async function api(path,body){
+  const r=await fetch('/admin/'+path,{method:body===undefined?'GET':'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+TOKEN},body:body===undefined?undefined:JSON.stringify(body)});
+  let j={};try{j=await r.json()}catch(_){}
+  if(r.status===401&&path!=='login'){TOKEN='';localStorage.removeItem('appaviAdmin');show(false)}
+  if(!r.ok||j.ok===false)throw new Error(j.msg||('Error '+r.status));
+  return j;
+}
+$('loginBtn').onclick=async()=>{
+  $('lmsg').textContent='';
+  try{const j=await api('login',{password:$('pw').value});TOKEN=j.token;localStorage.setItem('appaviAdmin',TOKEN);$('pw').value='';show(true);load()}
+  catch(e){$('lmsg').textContent=e.message;$('lmsg').style.color='var(--bad)'}
+};
+$('pw').onkeydown=e=>{if(e.key==='Enter')$('loginBtn').click()};
+$('logout').onclick=()=>{TOKEN='';localStorage.removeItem('appaviAdmin');show(false)};
+
+const fmt=t=>t?new Date(t).toLocaleString():'—';
+const typeName=t=>t==='life'?'LIFETIME':t+' DAYS';
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function left(r){
+  if(r.status==='unused')return 'not started';
+  if(r.status==='revoked')return 'expired by admin';
+  if(!r.expiresAt)return 'lifetime';
+  const d=r.expiresAt-NOW;if(d<=0)return 'expired';
+  const days=Math.floor(d/864e5),h=Math.floor(d%864e5/36e5);
+  return days+'d '+h+'h left';
+}
+function render(){
+  const q=$('q').value.trim().toLowerCase(),f=$('f').value;
+  const rows=KEYS.filter(r=>(!f||r.status===f)&&(!q||(r.key+' '+r.note+' '+r.deviceId).toLowerCase().includes(q)));
+  $('list').innerHTML=rows.length?rows.map(r=>`
+    <div class="key">
+      <div class="top"><span class="code">${esc(r.key)}</span><span class="chip ${r.status}">${r.status==='revoked'?'EXPIRED BY ADMIN':r.status.toUpperCase()}</span></div>
+      <div class="meta">${typeName(r.type)} · ${left(r)}${r.note?' · <b>'+esc(r.note)+'</b>':''}<br>
+        Created: ${fmt(r.createdAt)}<br>
+        ${r.activatedAt?'Activated: '+fmt(r.activatedAt)+' · Expires: '+(r.expiresAt?fmt(r.expiresAt):'never')+'<br>':''}
+        ${r.deviceId?'Device: <span class="code" style="font-size:11px">'+esc(r.deviceId.slice(0,8))+'…</span> · Last seen: '+fmt(r.lastSeenAt)+'<br>':''}
+      </div>
+      <div class="acts">
+        <button class="sm ghost" data-a="copy" data-k="${esc(r.key)}">COPY</button>
+        ${r.revoked?`<button class="sm green" data-a="restore" data-k="${esc(r.key)}">RESTORE</button>`:`<button class="sm red" data-a="expire" data-k="${esc(r.key)}">EXPIRE NOW</button>`}
+        ${r.deviceId?`<button class="sm ghost" data-a="reset-device" data-k="${esc(r.key)}">RESET DEVICE</button>`:''}
+        <button class="sm ghost" data-a="delete" data-k="${esc(r.key)}">DELETE</button>
+      </div>
+    </div>`).join(''):'<div class="meta">No keys.</div>';
+}
+async function load(){
+  try{
+    const j=await api('keys');KEYS=j.keys;NOW=j.now;
+    const s=j.stats;$('stats').innerHTML=[['total','Total'],['unused','Unused'],['active','Active'],['expired','Expired'],['revoked','By admin']].map(([k,l])=>`<div class="stat"><b>${s[k]}</b><span>${l}</span></div>`).join('');
+    render();
+  }catch(e){say(e.message,true)}
+}
+$('q').oninput=render;$('f').onchange=render;
+$('list').onclick=async e=>{
+  const b=e.target.closest('button[data-a]');if(!b)return;
+  const a=b.dataset.a,k=b.dataset.k;
+  if(a==='copy'){try{await navigator.clipboard.writeText(k);say('Copied '+k)}catch(_){say(k)}return}
+  const ask={expire:'Expire this key now? The user loses access within minutes.',delete:'Delete this key forever?','reset-device':'Unlink this key from its device so it can be used on a new device?'}[a];
+  if(ask&&!confirm(ask))return;
+  try{await api(a,{key:k});say('Done');load()}catch(err){say(err.message,true)}
+};
+let lastMade=[];
+$('gBtn').onclick=async()=>{
+  try{
+    const j=await api('generate',{type:$('gType').value,count:$('gCount').value,note:$('gNote').value});
+    lastMade=j.keys;$('made').textContent=j.keys.join('\n');$('made').classList.remove('hide');$('copyAll').classList.remove('hide');
+    say(j.keys.length+' key(s) created');load();
+  }catch(e){say(e.message,true)}
+};
+$('copyAll').onclick=async()=>{try{await navigator.clipboard.writeText(lastMade.join('\n'));say('Copied')}catch(_){say('Copy failed — select the text manually',true)}};
+$('bk').onclick=async()=>{
+  try{const j=await api('backup');const a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob([JSON.stringify({keys:j.keys})],{type:'application/json'}));
+    a.download='appavi-keys-backup-'+new Date().toISOString().slice(0,10)+'.json';a.click();
+  }catch(e){say(e.message,true)}
+};
+$('imp').onchange=async()=>{
+  const f=$('imp').files[0];if(!f)return;
+  try{const j=JSON.parse(await f.text());const r=await api('import',{keys:j.keys});say(r.imported+' keys restored');load()}
+  catch(e){say(e.message||'Bad backup file',true)}
+  $('imp').value='';
+};
+if(TOKEN){show(true);load()}else show(false);
+setInterval(()=>{if(TOKEN&&!$('app').classList.contains('hide'))load()},60000);
+</script></div></body></html>
