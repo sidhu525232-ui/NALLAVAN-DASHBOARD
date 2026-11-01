@@ -1,0 +1,9 @@
+{
+  "privateKeyPem": "-----BEGIN PRIVATE KEY-----\nMIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgv2l1/owzJrxhAHEp\nHbD/lcoz3VG9HjF2xbfvH5rHOcmhRANCAAQxTqvwkc8B00G0hpojW3jlETJ7sfOW\n/Uv7FIkvMQ21ogIOF5DK4QC9lRXuRoiQcJXDy8xAq0K/gUtfLeCkOget\n-----END PRIVATE KEY-----\n",
+  "publicJwk": {
+    "kty": "EC",
+    "crv": "P-256",
+    "x": "MU6r8JHPAdNBtIaaI1t45REye7Hzlv1L-xSJLzENtaI",
+    "y": "Ag4XkMrhAL2VFe5GiJBwlcPLzECrQr-BS18t4KQ6B60"
+  }
+}
